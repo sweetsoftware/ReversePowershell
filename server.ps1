@@ -16,13 +16,11 @@ Write-Host [ -NoNewline;Write-Host * -Fore Green -NoNewline;Write-Host ] Connect
 # Interact with the client
 while($true) {
     $cmd = Read-Host
-    if ($cmd -eq 'exit') {
-        $writer.WriteLine('bye')
-        $writer.Flush()
-        break
-    }
     $writer.WriteLine($cmd)
     $writer.Flush()
+    if ($cmd -eq 'exit') {
+        break
+    }
     $output = $reader.ReadLine()
     echo $output
     ""
